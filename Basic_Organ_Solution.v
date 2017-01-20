@@ -202,12 +202,11 @@ wire Sample_Clk_Signal;
 //
             
 
-
-
-
-
-
-            
+LED_sequence 
+seq(
+	.clock(Clock_1Hz),
+	.led_out(LED[7:0]),
+	.reset(1'h1));
 
 assign Sample_Clk_Signal = Clock_1KHz;
 
