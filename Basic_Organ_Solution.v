@@ -194,22 +194,47 @@ parameter character_exclaim=8'h21;          //'!'
 
 wire Clock_1KHz, Clock_1Hz;
 wire Sample_Clk_Signal;
-
+wire sound_signal;
+wire[31:0] Clk_div_num;
 //=======================================================================================================================
 //
 // Insert your code for Lab1 here!
 //
 //
             
+Tone_Selector_Mux
+Sound_select_Mux (.SW(SW[3:1]), .CLOCK_50(CLOCK_50), .Clk_div_num(Clk_div_num[31:0]));
 
 
+Generate_Arbitrary_Divided_Clk32 
+Gen_sound
+(
+.inclk(CLK_50M),
+.outclk(sound_signal),
+.outclk_Not(),
+.div_clk_count(Clk_div_num), //change this if necessary to suit your module
+.Reset(1'h1)
+); 
 
-
-
-
+/*
+Our_Clk_Divider_32
+Sound_Signal_Generator
+(
+.inclk(CLK_50M),
+.outclk(sound_signal),
+.outclk_Not(),
+.div_clk_count(Clk_div_num), //change this if necessary to suit your module
+.Reset(1'h1)
+);
+*/
             
-
-assign Sample_Clk_Signal = Clock_1KHz;
+Mux2to1 #(1) Sound_Switch
+(
+.input1(sound_signal),
+.input0(1'b0),
+.sel(SW[0]),
+.out(Sample_Clk_Signal)
+);
 
 //Audio Generation Signal
 //Note that the audio needs signed data - so convert 1 bit to 8 bits signed

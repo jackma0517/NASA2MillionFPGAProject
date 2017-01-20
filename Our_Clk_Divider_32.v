@@ -1,4 +1,4 @@
-module Our_Clk_Divider_32(inclk,outclk,outclk_not,div_clk_count,Reset);
+module Our_Clk_Divider_32(inclk,outclk,outclk_Not,div_clk_count,Reset);
      input inclk;
 	 input Reset;
 	 output outclk;
