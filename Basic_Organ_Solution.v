@@ -192,10 +192,7 @@ parameter character_space=8'h20;           //' '
 parameter character_exclaim=8'h21;          //'!'
 
 
-wire Clock_1KHz, Clock_1Hz;
-wire Sample_Clk_Signal;
-wire sound_signal;
-wire[31:0] Clk_div_num;
+
 //=======================================================================================================================
 //
 // Insert your code for Lab1 here!
@@ -204,7 +201,10 @@ wire[31:0] Clk_div_num;
             
 // Part A
 
-assign Sample_Clk_Signal = Clock_1KHz;
+wire Clock_1KHz, Clock_1Hz;
+wire Sound_Clk_Signal;
+wire sound_signal;
+wire[31:0] Clk_div_num;
 
 Our_Clk_Divider_32
 Sound_Signal_Generator
@@ -218,23 +218,24 @@ Sound_Signal_Generator
 
 Tone_Selector_Mux
 Sound_select_Mux (
-.SW(SW[3:1]), 
-.CLOCK_50(CLOCK_50), 
+.SW(SW[3:1]),  
 .Clk_div_num(Clk_div_num[31:0])
 );
 
-Mux2to1 #(1) Sound_Switch
+Mux2to1 #(1) 
+Sound_Switch
 (
 .input1(sound_signal),
 .input0(1'b0),
 .sel(SW[0]),
-.out(Sample_Clk_Signal)
+.out(Sound_Clk_Signal)
 );
 
+// Part 
 
 //Audio Generation Signal
 //Note that the audio needs signed data - so convert 1 bit to 8 bits signed
-wire [7:0] audio_data = {(~Sample_Clk_Signal),{7{Sample_Clk_Signal}}}; //generate signed sample audio signal
+wire [7:0] audio_data = {(~Sound_Clk_Signal),{7{Sound_Clk_Signal}}}; //generate signed sample audio signal
 
 
 
@@ -274,7 +275,7 @@ Generate_LCD_scope_Clk(
 (* keep = 1, preserve = 1 *) logic ScopeChannelASignal;
 (* keep = 1, preserve = 1 *) logic ScopeChannelBSignal;
 
-assign ScopeChannelASignal = Sample_Clk_Signal;
+assign ScopeChannelASignal = Sound_Clk_Signal;
 assign ScopeChannelBSignal = SW[1];
 
 scope_capture LCD_scope_channelA(
@@ -303,24 +304,24 @@ LCD_Scope_Encapsulated_pacoblaze_wrapper LCD_LED_scope(
                     .clk(CLK_50M),  //don't touch
                           
                         //LCD Display values
-                      .InH(8'hAA),
-                      .InG(8'hBB),
-                      .InF(8'h01),
-                       .InE(8'h23),
-                      .InD(8'h45),
-                      .InC(8'h67),
-                      .InB(8'h89),
-                     .InA(8'h00),
+                      .InH(SW[3]),
+                      .InG(SW[2]),
+                      .InF(SW[1]),
+                       .InE(SW[0]),
+                      .InD(Clk_div_num[31:24]),
+                      .InC(Clk_div_num[23:16]),
+                      .InB(Clk_div_num[15:8]),
+                     .InA(Clk_div_num[7:0]),
                           
                      //LCD display information signals
-                         .InfoH({character_A,character_U}),
-                          .InfoG({character_S,character_W}),
-                          .InfoF({character_space,character_A}),
-                          .InfoE({character_N,character_space}),
-                          .InfoD({character_E,character_X}),
-                          .InfoC({character_A,character_M}),
-                          .InfoB({character_P,character_L}),
-                          .InfoA({character_E,character_exclaim}),
+                         .InfoH({character_L,character_A}),
+                          .InfoG({character_B,character_1}),
+                          .InfoF({character_space,character_C}),
+                          .InfoE({character_P,character_E}),
+                          .InfoD({character_N,character_3}),
+                          .InfoC({character_1,character_1}),
+                          .InfoB({character_exclaim ,character_exclaim}),
+                          .InfoA({character_exclaim,character_exclaim}),
                           
                   //choose to display the values or the oscilloscope
                           .choose_scope_or_LCD(choose_LCD_or_SCOPE),

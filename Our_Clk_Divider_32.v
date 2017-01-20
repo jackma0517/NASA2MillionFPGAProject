@@ -9,7 +9,7 @@ module Our_Clk_Divider_32(inclk,outclk,outclk_Not,div_clk_count,Reset);
 	 wire [31:0] next_value;
 	 reg reg_clk = 0;
 	 
-	 always @(posedge inclk or posedge Reset)
+	 always @(posedge inclk)
 		begin
 	 
 		if(~Reset)
