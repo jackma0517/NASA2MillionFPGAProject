@@ -219,9 +219,12 @@ Sound_Signal_Generator
 Tone_Selector_Mux
 Sound_select_Mux (
 .SW(SW[3:1]),  
-.Clk_div_num(Clk_div_num[31:0])
+.Clk_div_num(Clk_div_num[31:0]),
+.tone_name(tone_name)
 );
 
+
+// Part B
 Mux2to1 #(1) 
 Sound_Switch
 (
@@ -231,7 +234,19 @@ Sound_Switch
 .out(Sound_Clk_Signal)
 );
 
-// Part 
+// Part C
+wire [15:0] tone_name;
+
+// Part D is implemented below, no additional code needed
+
+// Part E
+LED_state_machine led_fsm(.clock(Clock_1Hz),.reset(0),.LED_8(LED[7:0]));
+
+// Part Bonus 1 
+//Add switches to increase clock to led state machine
+
+// Part Bonus 2
+// Add a song :), copy my LED_state_machine to make
 
 //Audio Generation Signal
 //Note that the audio needs signed data - so convert 1 bit to 8 bits signed
@@ -308,10 +323,10 @@ LCD_Scope_Encapsulated_pacoblaze_wrapper LCD_LED_scope(
                       .InG(SW[2]),
                       .InF(SW[1]),
                        .InE(SW[0]),
-                      .InD(Clk_div_num[31:24]),
-                      .InC(Clk_div_num[23:16]),
-                      .InB(Clk_div_num[15:8]),
-                     .InA(Clk_div_num[7:0]),
+                      .InD(0),
+                      .InC(0),
+                      .InB(0),
+					 .InA(audio_data),
                           
                      //LCD display information signals
                          .InfoH({character_L,character_A}),
@@ -331,7 +346,7 @@ LCD_Scope_Encapsulated_pacoblaze_wrapper LCD_LED_scope(
                           .scope_channelB(scope_channelB), //don't touch
                           
                   //scope information generation
-                          .ScopeInfoA({character_1,character_K,character_H,character_lowercase_z}),
+                          .ScopeInfoA(tone_name),
                           .ScopeInfoB({character_S,character_W,character_1,character_space}),
                           
                  //enable_scope is used to freeze the scope just before capturing 

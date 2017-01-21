@@ -10,10 +10,11 @@ module testbench();
 	
     wire clock_out;
 	wire outclk;
-	wire [9:0]led_out;
+	wire [7:0]led_out;
 
 	Our_Clk_Divider_32 clkdivider(clock_sig,outclk,,divisor,reset);
-	LED_sequence seq(.clock(outclk),.led_out(led_out),.reset(reset));
+	LED_state_machine led_fsm(.clock(clock_sig),.reset(0),.LED_8(led_out));
+
 	 integer i; 
     initial begin
 		
