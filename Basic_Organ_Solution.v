@@ -201,10 +201,11 @@ parameter character_exclaim=8'h21;          //'!'
             
 // Part A
 
-wire Clock_1KHz, Clock_1Hz;
+wire Clock_1KHz, Clock_1Hz, Clock_4Hz, Clock_8Hz;
 wire Sound_Clk_Signal;
 wire sound_signal;
 wire[31:0] Clk_div_num;
+wire led_clock;
 
 Our_Clk_Divider_32
 Sound_Signal_Generator
@@ -215,6 +216,24 @@ Sound_Signal_Generator
 .div_clk_count(Clk_div_num), //change this if necessary to suit your module
 .Reset(1'h1)
 );
+
+Our_Clk_Divider_32
+Gen_4Hz_clk
+(.inclk(CLK_50M),
+.outclk(Clock_4Hz),
+.outclk_Not(),
+.div_clk_count(32'h5F5E10),
+.Reset(1'h1)
+); 
+
+Our_Clk_Divider_32
+Gen_8Hz_clk
+(.inclk(CLK_50M),
+.outclk(Clock_8Hz),
+.outclk_Not(),
+.div_clk_count(32'h2FAF08),
+.Reset(1'h1)
+); 
 
 Tone_Selector_Mux
 Sound_select_Mux (
@@ -239,11 +258,22 @@ wire [15:0] tone_name;
 
 // Part D is implemented below, no additional code needed
 
-// Part E
-LED_state_machine led_fsm(.clock(Clock_1Hz),.reset(0),.LED_8(LED[7:0]));
-
+// Part E & bonus
 // Part Bonus 1 
-//Add switches to increase clock to led state machine
+// Add switches to increase clock to led state machine
+Mux4to1
+led_speed_control(
+.input0(Clock_1Hz),
+.input1(Clock_2Hz),
+.input2(Clock_4Hz),
+.input3(Clock_8Hz),
+.sel(SW[5:4]),
+.out(led_clock)
+);
+
+LED_state_machine led_fsm(.clock(led_clock),.reset(0),.LED_8(LED[7:0]));
+
+
 
 // Part Bonus 2
 // Add a song :), copy my LED_state_machine to make
@@ -373,6 +403,8 @@ Gen_1KHz_clk
 .outclk_Not(),
 .div_clk_count(32'h61A6), //change this if necessary to suit your module
 .Reset(1'h1)); 
+
+
 
 wire speed_up_raw;
 wire speed_down_raw;
