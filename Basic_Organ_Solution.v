@@ -206,6 +206,8 @@ wire Sound_Clk_Signal;
 wire sound_signal;
 wire[31:0] Clk_div_num;
 wire led_clock;
+wire song_output;
+wire octave_output;
 
 Our_Clk_Divider_32
 Sound_Signal_Generator
@@ -250,7 +252,7 @@ Sound_Switch
 .input1(sound_signal),
 .input0(1'b0),
 .sel(SW[0]),
-.out(Sound_Clk_Signal)
+.out(octave_output)
 );
 
 // Part C
@@ -261,6 +263,7 @@ wire [15:0] tone_name;
 // Part E & bonus
 // Part Bonus 1 
 // Add switches to increase clock to led state machine
+// use switch[5:4] to control the speed of led
 Mux4to1
 led_speed_control(
 .input0(Clock_1Hz),
@@ -274,10 +277,22 @@ led_speed_control(
 LED_state_machine led_fsm(.clock(led_clock),.reset(0),.LED_8(LED[7:0]));
 
 
-
 // Part Bonus 2
-// Add a song :), copy my LED_state_machine to make
-
+// Add a song :)
+Song_state_machine(
+.CLK_50M(CLK_50M),
+.reset(1'b0),
+.song_output(song_output),
+);
+//use switch 6 to select mode 
+Mux2to1 #(1) 
+Mode_Switch
+(
+.input1(song_output),
+.input0(octave_output),
+.sel(SW[6]),
+.out(Sound_Clk_Signal)
+);
 //Audio Generation Signal
 //Note that the audio needs signed data - so convert 1 bit to 8 bits signed
 wire [7:0] audio_data = {(~Sound_Clk_Signal),{7{Sound_Clk_Signal}}}; //generate signed sample audio signal

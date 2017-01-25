@@ -9,8 +9,8 @@ module Tone_Selector_Mux(SW,Clk_div_num,tone_name);
 	parameter Mi_divider = 32'h9422;
 	parameter Fa_divider = 32'h8BE8;
 	parameter So_divider = 32'h7CB8;
-	parameter La_divider = 32'h6EFA; //odd
-	parameter Si_divider =  32'h62F2;//odd
+	parameter La_divider = 32'h6EFA; 
+	parameter Si_divider =  32'h62F2;
 	parameter DoH_divider = 32'h5D5C;
 	
 	always_comb
