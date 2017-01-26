@@ -204,10 +204,12 @@ parameter character_exclaim=8'h21;          //'!'
 wire Clock_1KHz, Clock_1Hz, Clock_4Hz, Clock_8Hz;
 wire Sound_Clk_Signal;
 wire sound_signal;
-wire[31:0] Clk_div_num;
+wire[31:0] Clk_div_num,led_clock_div;
 wire led_clock;
 wire song_output;
 wire octave_output;
+wire our_led_clk;
+
 
 Our_Clk_Divider_32 Sound_Signal_Generator
 (
@@ -218,21 +220,7 @@ Our_Clk_Divider_32 Sound_Signal_Generator
 .Reset(1'h1)
 );
 
-Our_Clk_Divider_32 Gen_4Hz_clk
-(.inclk(CLK_50M),
-.outclk(Clock_4Hz),
-.outclk_Not(),
-.div_clk_count(32'h5F5E10),
-.Reset(1'h1)
-); 
 
-Our_Clk_Divider_32 Gen_8Hz_clk
-(.inclk(CLK_50M),
-.outclk(Clock_8Hz),
-.outclk_Not(),
-.div_clk_count(32'h2FAF08),
-.Reset(1'h1)
-); 
 
 Tone_Selector_Mux Sound_select_Mux
  (.SW(SW[3:1]),  
@@ -259,17 +247,51 @@ wire [15:0] tone_name;
 // Part Bonus 1 
 // Add switches to increase clock to led state machine
 // use switch[5:4] to control the speed of led
-Mux4to1
-led_speed_control(
-.input0(Clock_1Hz),
-.input1(Clock_2Hz),
-.input2(Clock_4Hz),
-.input3(Clock_8Hz),
+
+parameter clk_1hz_div = 32'h17D7840;
+parameter clk_2hz_div = 32'hBEBC20;
+parameter clk_4hz_div = 32'h5F5E10;
+parameter clk_8hz_div = 32'h2FAF08;
+
+Mux4to1 #(32) led_speed_control(
+.input0(clk_1hz_div),
+.input1(clk_2hz_div),
+.input2(clk_4hz_div),
+.input3(clk_8hz_div),
 .sel(SW[5:4]),
-.out(led_clock)
+.out(led_clock_div)
 );
 
-LED_state_machine led_fsm(.clock(led_clock),.reset(0),.LED_8(LED[7:0]));
+Our_Clk_Divider_32 led_clk_gen
+(
+.inclk(CLK_50M),
+.outclk(our_led_clk),
+.outclk_Not(),
+//.div_clk_count(32'h17D7840), //change this if necessary to suit your module
+.div_clk_count(led_clock_div),
+.Reset(1'h1)
+);
+
+LED_state_machine led_fsm(.clock(our_led_clk),.reset(0),.LED_8(LED[7:0]));
+/*
+Our_Clk_Divider_32 Gen_4Hz_clk
+(.inclk(CLK_50M),
+.outclk(Clock_4Hz),
+.outclk_Not(),
+.div_clk_count(32'h5F5E10),
+.Reset(1'h1)
+); 
+
+Our_Clk_Divider_32 Gen_8Hz_clk
+(.inclk(CLK_50M),
+.outclk(Clock_8Hz),
+.outclk_Not(),
+.div_clk_count(32'h2FAF08),
+.Reset(1'h1)
+); 
+*/
+
+
 
 // Part Bonus 2
 // Add a song :)

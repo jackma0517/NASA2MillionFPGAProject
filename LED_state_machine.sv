@@ -37,7 +37,7 @@
 			S12: {next_state,state_output} = {S13,8'b0000_0100};
 			S13: {next_state,state_output} = {S0, 8'b0000_0010};
 			
-			default: {next_state, state_output} = {S0, 8'b0000_0010};
+			default: {next_state, state_output} = {S0, 8'b0000_0001};
 		endcase
 	
 	assign LED_8 = state_output;
