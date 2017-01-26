@@ -19,7 +19,7 @@
 		else 
 			current_state <= next_state;
 	
-	always_comb 
+	always_comb
 		case (current_state)
 			
 			S0:  {next_state,state_output} = {S1, 8'b0000_0001};

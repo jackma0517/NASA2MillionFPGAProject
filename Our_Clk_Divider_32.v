@@ -23,7 +23,7 @@ module Our_Clk_Divider_32(inclk,outclk,outclk_Not,div_clk_count,Reset);
 				counter <= 0;
 				reg_clk <= ~reg_clk;
 			end
-		else
+		else 
 			begin
 				counter <= next_value;
 			end
@@ -31,7 +31,6 @@ module Our_Clk_Divider_32(inclk,outclk,outclk_Not,div_clk_count,Reset);
 		end
 		
 	 assign next_value = counter+1;
-	 
 	 
 	 assign outclk = reg_clk;	
 	 assign outclk_Not = ~outclk;

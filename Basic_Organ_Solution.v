@@ -209,8 +209,7 @@ wire led_clock;
 wire song_output;
 wire octave_output;
 
-Our_Clk_Divider_32
-Sound_Signal_Generator
+Our_Clk_Divider_32 Sound_Signal_Generator
 (
 .inclk(CLK_50M),
 .outclk(sound_signal),
@@ -219,8 +218,7 @@ Sound_Signal_Generator
 .Reset(1'h1)
 );
 
-Our_Clk_Divider_32
-Gen_4Hz_clk
+Our_Clk_Divider_32 Gen_4Hz_clk
 (.inclk(CLK_50M),
 .outclk(Clock_4Hz),
 .outclk_Not(),
@@ -228,8 +226,7 @@ Gen_4Hz_clk
 .Reset(1'h1)
 ); 
 
-Our_Clk_Divider_32
-Gen_8Hz_clk
+Our_Clk_Divider_32 Gen_8Hz_clk
 (.inclk(CLK_50M),
 .outclk(Clock_8Hz),
 .outclk_Not(),
@@ -237,17 +234,14 @@ Gen_8Hz_clk
 .Reset(1'h1)
 ); 
 
-Tone_Selector_Mux
-Sound_select_Mux (
-.SW(SW[3:1]),  
+Tone_Selector_Mux Sound_select_Mux
+ (.SW(SW[3:1]),  
 .Clk_div_num(Clk_div_num[31:0]),
 .tone_name(tone_name)
 );
 
-
 // Part B
-Mux2to1 #(1) 
-Sound_Switch
+Mux2to1 #(1) Sound_Switch
 (
 .input1(sound_signal),
 .input0(1'b0),
@@ -261,6 +255,7 @@ wire [15:0] tone_name;
 // Part D is implemented below, no additional code needed
 
 // Part E & bonus
+
 // Part Bonus 1 
 // Add switches to increase clock to led state machine
 // use switch[5:4] to control the speed of led
@@ -275,7 +270,6 @@ led_speed_control(
 );
 
 LED_state_machine led_fsm(.clock(led_clock),.reset(0),.LED_8(LED[7:0]));
-
 
 // Part Bonus 2
 // Add a song :)
@@ -544,7 +538,7 @@ assign HEX5 = Seven_Seg_Val[5];
             
 wire Clock_2Hz;
             
-Generate_Arbitrary_Divided_Clk32 
+Our_Clk_Divider_32 
 Gen_2Hz_clk
 (.inclk(CLK_50M),
 .outclk(Clock_2Hz),
